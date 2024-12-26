@@ -17,7 +17,7 @@ const Sidebar: React.FC = () => {
     <div className="bg-gray-800 text-white w-64 min-h-screen p-4">
       <nav>
         <ul className="space-y-2">
-          {user && (user.role === 'admin' || user.role === 'supervisor') && (
+          {user && (user.role === 'admin' || user.role === 'supervisor' || user.role === 'operator') && (
             <li>
               <Link to="/dashboard" className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
                 <Home className="h-5 w-5" />
@@ -38,7 +38,7 @@ const Sidebar: React.FC = () => {
             </li>
           )}
 
-          {user && (user.role === 'admin' ) && (
+          {user && (user.role === 'admin'|| user.role === 'operator' ) && (
             <li>
               <Link to="/booth-selection" className="flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
                 <Truck className="h-5 w-5" />
