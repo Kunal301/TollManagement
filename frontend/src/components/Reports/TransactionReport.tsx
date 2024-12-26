@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import axios from 'axios';
+import api from "../../services/api";
 
 interface Transaction {
   _id: string;
@@ -12,7 +12,7 @@ interface Transaction {
   journeyType: string;
   vehicleWeight: string;
   amount: number;
-  timestamp: string;
+  createdAt: string; // Changed from timestamp to createdAt to match backend
 }
 
 export default function TransactionsReport() {
@@ -39,13 +39,31 @@ export default function TransactionsReport() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5000/api/transactions');
+      const response = await api.get('/api/transactions');
       setTransactions(response.data);
     } catch (err) {
       setError('Failed to fetch transactions');
       console.error('Error fetching transactions:', err);
     }
     setIsLoading(false);
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('en-IN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return 'Invalid Date';
+    }
   };
 
   const filterTransactions = () => {
@@ -60,7 +78,7 @@ export default function TransactionsReport() {
 
     if (fromDate && toDate) {
       filtered = filtered.filter(t => {
-        const transactionDate = new Date(t.timestamp);
+        const transactionDate = new Date(t.createdAt);
         return transactionDate >= new Date(fromDate) && transactionDate <= new Date(toDate);
       });
     }
@@ -145,7 +163,7 @@ export default function TransactionsReport() {
                 <td className="px-4 py-3">{transaction.journeyType}</td>
                 <td className="px-4 py-3">{transaction.vehicleWeight}</td>
                 <td className="px-4 py-3">₹{transaction.amount.toFixed(2)}</td>
-                <td className="px-4 py-3">{new Date(transaction.timestamp).toLocaleString()}</td>
+                <td className="px-4 py-3">{formatDate(transaction.createdAt)}</td>
               </tr>
             ))}
           </tbody>

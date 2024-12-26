@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import axios from 'axios'
+import api from "../../services/api";
 
 interface Transaction {
   _id: string
@@ -39,7 +40,7 @@ export default function BoothTransaction() {
     setIsLoading(true)
     setError(null)
     try {
-      const response = await axios.get('http://localhost:5000/api/transactions')
+      const response = await api.get('/api/transactions')
       setTransactions(response.data)
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -78,7 +79,7 @@ export default function BoothTransaction() {
 
   const handleRemove = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5000/api/transactions/${id}`)
+      await api.delete(`/api/transactions/${id}`)
       setTransactions(prev => prev.filter(t => t._id !== id))
     } catch (err) {
       console.error('Error removing transaction:', err)

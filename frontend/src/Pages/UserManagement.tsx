@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import api from '../services/api';
 interface User {
   _id: string;
   username: string;
@@ -17,7 +17,7 @@ const UserManagement: React.FC = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/users', {
+        const response = await api.get('/api/users', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -37,7 +37,7 @@ const UserManagement: React.FC = () => {
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.patch(`http://localhost:5000/api/users/${userId}/role`, 
+      await api.patch(`/api/users/${userId}/role`, 
         { role: newRole },
         {
           headers: {

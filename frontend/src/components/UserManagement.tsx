@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import api from "../services/api";
 
 interface User {
   _id: string;
@@ -16,7 +17,7 @@ const UserManagement: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/users');
+        const response = await api.get('/api/users');
         setUsers(response.data.data);
         setLoading(false);
       } catch (err) {
@@ -31,7 +32,7 @@ const UserManagement: React.FC = () => {
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
-      await axios.patch(`http://localhost:5000/api/users/${userId}/role`, { role: newRole });
+      await api.patch(`/api/users/${userId}/role`, { role: newRole });
       setUsers(users.map(user => 
         user._id === userId ? { ...user, role: newRole } : user
       ));

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import api from "../services/api";
 import Layout from '../components/common/Layout';
 import RevenueChart from '../components/dashboard/RevenueChart';
 import TransactionSummary from '../components/dashboard/TransactionSummary';
@@ -23,7 +24,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get<DashboardData>('http://localhost:5000/api/dashboard');
+        const response = await api.get<DashboardData>('/api/dashboard');
         setDashboardData(response.data);
         setIsLoading(false);
       } catch (err) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
+import api from '../../services/api';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,10 +12,12 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await api.post('/api/auth/login', {
         email,
         password,
-      });
+      }
+    );
+    
       console.log('Login response:', response.data);
       if (response.data.status === 'success') {
         localStorage.setItem('token', response.data.token);
@@ -25,9 +28,10 @@ const Login: React.FC = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
-      if (axios.isAxiosError(err)) {
-        const axiosError = err as AxiosError<{ message: string }>;
-        setError(axiosError.response?.data?.message || 'Login failed. Please try again.');
+      if (err instanceof AxiosError) {
+        console.error('Error response:', err.response?.data);
+        console.error('Error status:', err.response?.status);
+        setError(`Login failed: ${err.response?.data?.message || 'Unknown error'}`);
       } else {
         setError('An unexpected error occurred. Please try again.');
       }

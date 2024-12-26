@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Scale, Printer } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "../../../services/api";
 
 interface VehicleEntry {
   vehicleNo: string;
@@ -100,7 +101,7 @@ export default function BoothAndVehicleForm() {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post<TransactionData>('http://localhost:5000/api/transactions', formData);
+      const response = await api.post<TransactionData>('/api/transactions', formData);
       console.log('Raw transaction response:', response.data);
       setTransactionData(response.data);
       setShowReceipt(true);

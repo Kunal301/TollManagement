@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import axios from 'axios';
+import api from "../../services/api";
 
 interface RevenueData {
   byVehicleType: {
@@ -38,7 +39,7 @@ export default function RevenueReport() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get('http://localhost:5000/api/transactions/revenue', {
+      const response = await api.get('/api/transactions/revenue', {
         params: { startDate: start, endDate: end }
       });
       setRevenueData(response.data);
