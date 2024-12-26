@@ -18,10 +18,20 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('Error connecting to MongoDB:', err));
-
+mongoose.connect(process.env.MONGODB_URI,{
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true,
+  // w: 'majority',
+  // retryWrites: true,
+})
+.then(() => {
+  console.log('Connected to MongoDB Atlas');
+  console.log('Database Name:', mongoose.connection.db.databaseName);
+})
+.catch((err) => {
+  console.error('MongoDB connection error:', err);
+});
+  
 // Root route
 app.get('/', (req, res) => {
   res.json({
@@ -34,7 +44,22 @@ app.get('/', (req, res) => {
     }
   });
 });
-
+// Add this route to your server.js file
+app.post('/api/test', async (req, res) => {
+  try {
+    // This will create a test collection and document
+    const testCollection = mongoose.connection.collection('test');
+    await testCollection.insertOne({ test: 'data', timestamp: new Date() });
+    
+    res.json({ 
+      message: 'Database connection successful', 
+      database: mongoose.connection.db.databaseName 
+    });
+  } catch (error) {
+    console.error('Test route error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 // Routes
 // app.use('/api/users', userRoutes);
 // app.use('/api/tolls', tollRoutes);
