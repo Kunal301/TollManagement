@@ -1,54 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
-import api from '../../services/api';
+import React, { useState, useCallback } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { AxiosError } from "axios";
+import api from "../../services/api";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true); // Show loading indicator
+
     try {
-      const response = await api.post('/api/auth/login', {
-        email,
-        password,
-      }
-    );
-    
-      console.log('Login response:', response.data);
-      if (response.data.status === 'success') {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        navigate('/dashboard');
+      const response = await api.post("/api/auth/login", { email, password });
+
+      if (response.data.status === "success") {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        navigate("/dashboard");
       } else {
-        setError(response.data.message || 'Login failed. Please try again.');
+        setError(response.data.message || "Login failed. Please try again.");
       }
     } catch (err) {
-      console.error('Login error:', err);
-      if (err instanceof AxiosError) {
-        console.error('Error response:', err.response?.data);
-        console.error('Error status:', err.response?.status);
-        setError(`Login failed: ${err.response?.data?.message || 'Unknown error'}`);
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
+      setError("Login failed. Please try again.");
+    } finally {
+      setLoading(false); // Hide loading indicator
     }
-  };
+  }, [email, password, navigate]);
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}"); // Get user data
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+          </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" value="true" />
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email-address" className="sr-only">Email address</label>
+              <label htmlFor="email-address" className="sr-only">
+                Email address
+              </label>
               <input
                 id="email-address"
                 name="email"
@@ -62,7 +61,9 @@ const Login: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
@@ -82,17 +83,27 @@ const Login: React.FC = () => {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={loading} // Disable button while loading
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md 
+              ${loading ? "bg-gray-400 text-white" : "bg-indigo-600 hover:bg-indigo-700 text-white"}
+              focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
             >
-              Sign in
+              {loading ? "Logging in..." : "Sign in"}
             </button>
           </div>
         </form>
         <div className="text-sm text-center">
-          <span className="text-gray-600">Don't have an account? </span>
-          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-            Sign up
-          </Link>
+          {user?.role === "admin" && (
+            <>
+              <span className="text-gray-600">Don't have an account? </span>
+              <Link
+                to="/register"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

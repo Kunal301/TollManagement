@@ -42,7 +42,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     // Check if user exists
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");;
     if (!user) {
       return res.status(401).json({
         status: 'fail',
@@ -60,9 +60,11 @@ export const login = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
-    });
+    const token = jwt.sign(
+  { id: user._id, role: user.role }, 
+  process.env.JWT_SECRET, 
+  { expiresIn: "1d" }
+);
 
     res.status(200).json({
       status: 'success',

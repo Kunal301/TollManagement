@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./Pages/Dashboard";
-import TollPlazaManagement from "./Pages/TollPlazaManagement";
 import UserManagement from "./Pages/UserManagement";
 import { RevenueTransactionProvider } from "./contexts/RevenueTransactionContext";
 import Reports from "./Pages/Reports";
@@ -21,10 +20,10 @@ const PrivateRoute: React.FC<{
   children: React.ReactNode;
   allowedRoles: string[];
 }> = ({ children, allowedRoles }) => {
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
+  // const userString = localStorage.getItem("user");
+  // const user = userString ? JSON.parse(userString) : null;
   const isAuthenticated = !!localStorage.getItem("token");
-  const hasRequiredRole = user && allowedRoles.includes(user.role);
+  // const hasRequiredRole = user && allowedRoles.includes(user.role);
 
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };

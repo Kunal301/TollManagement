@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import api from "../services/api";
 import Layout from '../components/common/Layout';
-import RevenueChart from '../components/dashboard/RevenueChart';
+// import RevenueChart from '../components/dashboard/RevenueChart';
 import TransactionSummary from '../components/dashboard/TransactionSummary';
-import ActivePlazas from '../components/dashboard/ActivePlazas';
-import { useTollPlazas } from '../contexts/TollPlazaContext';
+// import ActivePlazas from '../components/dashboard/ActivePlazas';
+// import { useTollPlazas } from '../contexts/TollPlazaContext';
 
 interface DashboardData {
   totalTransactions: number;
@@ -13,7 +13,7 @@ interface DashboardData {
 }
 
 const Dashboard: React.FC = () => {
-  const { plazas } = useTollPlazas();
+  // const { plazas } = useTollPlazas();
   const [dashboardData, setDashboardData] = useState<DashboardData>({
     totalTransactions: 0,
     totalRevenue: 0,
@@ -49,7 +49,7 @@ const Dashboard: React.FC = () => {
             totalRevenue={dashboardData.totalRevenue} 
             totalTransactions={dashboardData.totalTransactions} 
           />
-          <ActivePlazas count={plazas.length} />
+          {/* <ActivePlazas count={plazas.length} /> */}
         </div>
         <div className="mt-8">
           {/* <RevenueChart /> */}

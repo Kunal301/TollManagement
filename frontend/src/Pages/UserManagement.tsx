@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import api from '../services/api';
 interface User {
   _id: string;
@@ -12,7 +13,7 @@ const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+  const navigate = useNavigate(); 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -59,6 +60,13 @@ const UserManagement: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+       <button
+        onClick={() => navigate("/dashboard")}
+        className="flex items-center text-gray-700 hover:text-gray-900 mb-4"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        <span>Back to Dashboard</span>
+      </button>
       <h1 className="text-2xl font-bold mb-4">User Management</h1>
       <table className="min-w-full bg-white">
         <thead>

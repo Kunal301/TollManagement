@@ -2,13 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-// import tollRoutes from './routes/tollPlazas.js';
-// import userRoutes from './routes/users.js';
 import transactionRoutes from './routes/transactions.js';
 import dashboardRoutes from './routes/dashboard.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-
+import compression from 'compression';
 dotenv.config();
 
 const app = express();
@@ -16,7 +14,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
-
+app.use(compression());
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI,{
   // useNewUrlParser: true,

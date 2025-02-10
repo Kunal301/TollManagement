@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Scale, Printer } from 'lucide-react';
+import { ArrowLeft, Scale, Printer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../../../services/api";
@@ -39,7 +39,8 @@ export default function BoothAndVehicleForm() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [transactionData, setTransactionData] = useState<TransactionData | null>(null);
+  const [transactionData, setTransactionData] =
+    useState<TransactionData | null>(null);
 
   const handleBoothSelect = () => {
     if (selectedBooth) {
@@ -54,35 +55,36 @@ export default function BoothAndVehicleForm() {
     const calculatePrice = async () => {
       try {
         const mockPrices: Record<string, number> = {
-          "Car/Jeep": 160,
-          Lcv: 260,
-          "Bus Truck": 550,
-          "3 Axle": 600,
-          Mav: 860,
+          "Car/Jeep": 80,
+          Lcv: 120,
+          "Bus Truck": 260,
+          "3 Axle": 280,
+          Mav: 410,
         };
 
-        const penaltyPrices: Record<string, number> = {
-          "Car/Jeep": 50,
-          Lcv: 100,
-          "Bus Truck": 150,
-          "3 Axle": 200,
-          Mav: 360,
-        };
+        // const penaltyPrices: Record<string, number> = {
+        //   "Car/Jeep": 50,
+        //   Lcv: 100,
+        //   "Bus Truck": 150,
+        //   "3 Axle": 200,
+        //   Mav: 360,
+        // };
 
         const overweightPrices: Record<string, number> = {
-          "Car/Jeep": 100,
-          Lcv: 150,
-          "Bus Truck": 250,
-          "3 Axle": 300,
-          Mav: 500,
+          "Car/Jeep": 80,
+          Lcv: 120,
+          "Bus Truck": 260,
+          "3 Axle": 280,
+          Mav: 410,
         };
 
         let basePrice = mockPrices[formData.vehicleType] || 0;
         let additionalPrice = 0;
 
-        if (formData.journeyType === "Penalty") {
-          additionalPrice = penaltyPrices[formData.vehicleType] || 0;
-        } else if (formData.journeyType === "Overweight") {
+        // if (formData.journeyType === "Penalty") {
+        //   additionalPrice = mockPrices[formData.vehicleType] || 0;
+        // }
+        if (formData.journeyType === "Overweight") {
           additionalPrice = overweightPrices[formData.vehicleType] || 0;
         }
 
@@ -101,8 +103,11 @@ export default function BoothAndVehicleForm() {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const response = await api.post<TransactionData>('/api/transactions', formData);
-      console.log('Raw transaction response:', response.data);
+      const response = await api.post<TransactionData>(
+        "/api/transactions",
+        formData
+      );
+      console.log("Raw transaction response:", response.data);
       setTransactionData(response.data);
       setShowReceipt(true);
     } catch (error) {
@@ -120,47 +125,87 @@ export default function BoothAndVehicleForm() {
         printWindow.document.write("<html><head><title>Toll Receipt</title>");
         printWindow.document.write("<style>");
         printWindow.document.write(`
-          @media print {
-            body { 
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 0;
-              font-size: 10px; /* Reduced font size */
-            }
-            .receipt { 
-              max-width: 80mm;
-              margin: 0 auto;
-              padding: 5mm; /* Reduced padding */
-              box-sizing: border-box;
-            }
-            h2 { 
-              text-align: center;
-              margin-bottom: 3mm; /* Reduced margin */
-              font-size: 14px; /* Adjusted heading size */
-            }
-            p { 
-              margin: 1mm 0; /* Reduced margin */
-              text-align: left;
-            }
-            .center {
-              text-align: center;
-            }
-            .bold {
-              font-weight: bold;
-            }
-            .footer {
-              margin-top: 3mm;
-              text-align: center;
-              font-size: 9px;
-              width: 100%; /* Ensure full width */
-            }
-            .footer p {
-              margin: 0; /* Remove default paragraph margins */
-              text-align: center; /* Explicitly set text alignment for footer paragraphs */
-            }
+       
+        @media print {
+          body { 
+            font-family: Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 80mm;
+            font-size: 8px;
+            font-weight: 600;
+            line-height: 0.9;
+
           }
+          
+         receipt {
+            width: 100%;
+            margin: 0 auto;
+            // padding: 5mm;
+          }
+          .center{
+          padding-left: 40px;
+          }
+          .center0{
+                   padding-left: 30px;
+          }
+          .center1{
+                    padding-left: 40px;
+          }
+          .center2{
+                   padding-left: 30px;
+          }
+          .header {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 8px;
+                    padding-left: 20px;
+
+          }
+          
+          p {
+            margin: 4px 0;
+            
+          }
+          
+          .separator {
+            border: none;
+            border-top: 1px dashed #000;
+            margin: 8px 0;
+          }
+          
+          .footer {
+            margin-top: 8px;
+            font-size: 8px;
+margin-bottom:0px;
+          }
+
+          /* Hide the back button when printing */
+          .no-print {
+            display: none !important;
+          }
+        }
+
+        /* Styles for the preview only (not printing) */
+        .back-button {
+          position: fixed;
+          top: 20px;
+          left: 20px;
+          padding: 10px 20px;
+          background-color: #2563eb;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+        }
+        
         `);
         printWindow.document.write("</style></head><body>");
+        printWindow.document.write(
+          '<button onclick="window.close()" class="back-button no-print">Back to Application</button>'
+        );
         printWindow.document.write('<div class="receipt">');
         printWindow.document.write(receiptRef.current.innerHTML);
         printWindow.document.write("</div></body></html>");
@@ -176,7 +221,7 @@ export default function BoothAndVehicleForm() {
       vehicleType: "Car/Jeep",
       journeyType: "Regular",
       vehicleWeight: "0000",
-      amount: 160,
+      amount: 80,
       boothNo: formData.boothNo,
     });
     setShowReceipt(false);
@@ -185,7 +230,7 @@ export default function BoothAndVehicleForm() {
 
   const formatDate = (dateString: string) => {
     console.log("Received date string:", dateString);
-    
+
     const date = new Date(dateString);
 
     if (isNaN(date.getTime())) {
@@ -193,15 +238,16 @@ export default function BoothAndVehicleForm() {
       return "Invalid Date";
     }
 
-    return date.toLocaleString('en-IN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    });
+    return date
+      .toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })
+      .replace(",", " ,");
   };
 
   return (
@@ -244,59 +290,36 @@ export default function BoothAndVehicleForm() {
         </div>
       ) : showReceipt && transactionData ? (
         <div className="max-w-md mx-auto space-y-6">
-            <h2 className="text-2xl font-bold text-center mb-4">
-              Toll Receipt
-            </h2>
+          <h2 className="text-3xl font-bold text-center mb-4">Toll Receipt</h2>
           <div ref={receiptRef} className="bg-white p-6 rounded-lg shadow-md">
-          
+          <pre>
             <div className="space-y-2">
-              <p className="center bold">
-                National Highways Authority of India
-              </p>
-              <br></br>
-              <p>
-                <span className="bold">Ticket No. :</span> {transactionData.ticketNumber}
-              </p>
-              <p>
-                <span className="bold">Booth No:</span> {transactionData.boothNo}
-              </p>
-              <p>
-                <span className="bold">Date & Time:</span> {formatDate(transactionData.createdAt)}
-              </p>
-              <p>
-                <span className="bold">Vehicle No:</span> {transactionData.vehicleNo}
-              </p>
-              <p>
-                <span className="bold">Type of Vehicle:</span> {transactionData.vehicleType}
-              </p>
-              <p>
-                <span className="bold">Type of Journey:</span> {transactionData.journeyType}
-              </p>
-              <p>
-                <span className="bold">Method Of:</span> Cash
-              </p>
-              <p>
-                <span className="bold">Fee With Penalty:</span> ₹{transactionData.amount}
-              </p>
-              ------------------------------------------------------------------------
+            
+              <div className="header">National Highways Authority of India</div>
+             
+              <p>Section          :  NH28A 1052</p>
+              <p>Ticket No.       :  {transactionData.ticketNumber}</p>
+              <p>Booth No.        :  {transactionData.boothNo}</p>
+              <p>Date & Time      :  {formatDate(transactionData.createdAt)}</p>
+              <p>Vehicle No.      :  {transactionData.vehicleNo}</p>
+              <p>Type of Vehicle  :  {transactionData.vehicleType}</p>
+              <p>Type of Journey  :  {transactionData.journeyType}</p>
+              <p>Method Of        :  Cash</p>
+              <p>Fee With Penalty :  ₹{transactionData.amount}</p>
+              <div className="separator"></div>
               <p className="center">Only for Overloaded Vehicle</p>
-              
-              <p>
-                <span className="bold">Actual Wt of Vehicle :</span> {transactionData.vehicleWeight}
-              </p>
-              <p>
-                <span className="bold">Overloaded Vehicle Fees :</span> 0
-              </p>
-              <p>
-                <span className="bold">Collect Fees :</span> 0
-              </p>
+              <p>Actual Wt of Vehicle    : {transactionData.vehicleWeight} KG</p>
+              <p>Overloaded Vehicle Fees : 0</p>
+              <p>Collect Fees            : 0</p>
             </div>
-            --------------------------------------------------------------------------
-            <div className="mt-6 text-sm text-gray-500 footer text-center">
-              <p>All Toll Payments via FASTag Only.</p>
-              <p>w.e.f 15th December 2019</p>
-              <p>Wish You Safe & Happy Journey</p>
+            <div className="separator"></div>
+            <div className=" footer ">
+              <p className="center0">All Toll Payments via FASTag Only.</p>
+              <p className="center1">w.e.f 15th December 2019</p>
+              <p className="center2">Wish You Safe & Happy Journey</p>
             </div>
+            </pre>
+
           </div>
           <button
             onClick={handlePrint}
@@ -351,7 +374,7 @@ export default function BoothAndVehicleForm() {
             <label className="block text-sm font-medium text-gray-700">
               JOURNEY TYPE
             </label>
-            
+
             <select
               value={formData.journeyType}
               onChange={(e) => {

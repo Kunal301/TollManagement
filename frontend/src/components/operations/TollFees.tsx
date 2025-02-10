@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Search, X, ChevronLeft, ChevronRight, Copy } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Search, X, ChevronLeft, ChevronRight, Copy , ArrowLeft} from 'lucide-react'
 
 interface FeeRule {
   id: number
@@ -24,7 +25,7 @@ export default function TollPlazaFeeRules() {
   ])
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editValue, setEditValue] = useState({ vehicleType: '', journeyType: '', amount: '' })
-
+const navigate = useNavigate();
   const vehicleTypes = ['Car/Jeep', 'Lcv', 'Bus Truck', '3 Axle', 'Mav']
   const journeyTypes = ['Penalty']
 
@@ -83,6 +84,13 @@ export default function TollPlazaFeeRules() {
   return (
     <div className="p-6">
       {/* New Toll Fee Input */}
+      <button
+        onClick={() => navigate("/dashboard")}
+        className="flex items-center text-gray-700 hover:text-gray-900 mb-4"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        <span>Back to Dashboard</span>
+      </button>
       <div className="bg-white p-4 rounded-lg shadow mb-6">
         <div className="flex items-center gap-4">
           <span className="text-gray-600 min-w-[100px]">New Toll Fee :</span>
